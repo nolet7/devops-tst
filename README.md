@@ -30,7 +30,7 @@ A simple interactive web application built with FastAPI and vanilla HTML/JavaScr
 
 1. Install dependencies:
 ```bash
-pip install -r backend/requirements.txt
+python -m pip install -r backend/requirements.txt
 ```
 
 2. Start the application:
