@@ -43,7 +43,14 @@ async def get_app_info() -> Dict[str, Any]:
     }
 
 # Mount static files (frontend)
-app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+# Serve the main HTML file at root
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    """Serve the main HTML page"""
+    with open("frontend/index.html", "r") as f:
+        return HTMLResponse(content=f.read(), status_code=200)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
