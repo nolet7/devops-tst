@@ -79,9 +79,9 @@ argocd app sync interactiveapp --insecure
 
 3. **Verify Deployment**:
 ```bash
-kubectl get pods -n skillflight
-kubectl get svc -n skillflight
-kubectl get ingress -n skillflight
+kubectl get pods -n devops-tst
+kubectl get svc -n devops-tst
+kubectl get ingress -n devops-tst
 ```
 
 ### Manual Helm Deployment
@@ -90,13 +90,13 @@ If you prefer to deploy directly with Helm:
 
 ```bash
 # Install the application
-helm install interactiveapp ./helm/interactiveapp -n skillflight --create-namespace
+helm install interactiveapp ./helm/interactiveapp -n devops-tst --create-namespace
 
 # Upgrade the application
-helm upgrade interactiveapp ./helm/interactiveapp -n skillflight
+helm upgrade interactiveapp ./helm/interactiveapp -n devops-tst
 
 # Uninstall the application
-helm uninstall interactiveapp -n skillflight
+helm uninstall interactiveapp -n devops-tst
 ```
 
 ## Accessing the Application
@@ -118,7 +118,7 @@ To access via `interactiveapp.local`, add this line to your `/etc/hosts`:
 
 Get your ingress IP with:
 ```bash
-kubectl get ingress -n skillflight
+kubectl get ingress -n devops-tst
 ```
 
 ## Configuration
@@ -205,16 +205,16 @@ curl -X POST http://localhost:8000/api/submit \
 
 ```bash
 # Check pod status
-kubectl get pods -n skillflight -l app.kubernetes.io/name=interactiveapp
+kubectl get pods -n devops-tst -l app.kubernetes.io/name=interactiveapp
 
 # View pod logs
-kubectl logs -n skillflight -l app.kubernetes.io/name=interactiveapp
+kubectl logs -n devops-tst -l app.kubernetes.io/name=interactiveapp
 
 # Check service endpoints
-kubectl get endpoints -n skillflight
+kubectl get endpoints -n devops-tst
 
 # Verify ingress configuration
-kubectl describe ingress -n skillflight
+kubectl describe ingress -n devops-tst
 ```
 
 ## License
