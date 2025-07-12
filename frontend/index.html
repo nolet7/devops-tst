@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive DevOps App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            color: #2d3748;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #718096;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #3B82F6;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #3B82F6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn.loading::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            margin: auto;
+            border: 2px solid transparent;
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .response {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .response.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .response.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .response.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        .app-info {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 30px;
+            color: #0c4a6e;
+        }
+
+        .app-info h3 {
+            margin-bottom: 8px;
+            color: #0c4a6e;
+        }
+
+        .endpoints {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .endpoint {
+            background: #0ea5e9;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-family: monospace;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DevOps App</h1>
+        <p class="subtitle">Interactive application deployed with Argo CD</p>
+        
+        <div class="app-info" id="appInfo">
+            <h3>Loading application info...</h3>
+        </div>
+
+        <form id="messageForm">
+            <div class="form-group">
+                <label for="messageInput">Enter your message:</label>
+                <input type="text" id="messageInput" placeholder="Type something..." required>
+            </div>
+            <button type="submit" class="btn" id="submitBtn">Send Message</button>
+        </form>
+
+        <div class="response" id="responseDiv"></div>
+    </div>
+
+    <script>
+        // Load app info on page load
+        async function loadAppInfo() {
+            try {
+                const response = await fetch('/api/info');
+                const data = await response.json();
+                
+                const appInfoDiv = document.getElementById('appInfo');
+                appInfoDiv.innerHTML = `
+                    <h3>${data.app} v${data.version}</h3>
+                    <p><strong>Environment:</strong> ${data.environment}</p>
+                    <div class="endpoints">
+                        ${data.endpoints.map(endpoint => `<span class="endpoint">${endpoint}</span>`).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Failed to load app info:', error);
+                document.getElementById('appInfo').innerHTML = '<h3>Failed to load application info</h3>';
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('messageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const messageInput = document.getElementById('messageInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const responseDiv = document.getElementById('responseDiv');
+            
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+            submitBtn.textContent = '';
+            
+            // Hide previous response
+            responseDiv.classList.remove('show');
+            
+            try {
+                const response = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    responseDiv.className = 'response success';
+                    responseDiv.textContent = data.response;
+                    messageInput.value = '';
+                } else {
+                    throw new Error(data.detail || 'Failed to submit message');
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = `Error: ${error.message}`;
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+                submitBtn.textContent = 'Send Message';
+                
+                // Show response
+                setTimeout(() => responseDiv.classList.add('show'), 100);
+            }
+        });
+
+        // Load app info when page loads
+        loadAppInfo();
+    </script>
+</body>
+</html>
