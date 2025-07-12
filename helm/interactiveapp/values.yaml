@@ -24,7 +24,7 @@ securityContext:
   allowPrivilegeEscalation: false
   capabilities:
     drop:
-    - ALL
+      - ALL
   readOnlyRootFilesystem: false
   runAsNonRoot: true
   runAsUser: 1000
@@ -67,13 +67,17 @@ nodeSelector: {}
 
 tolerations: []
 
-affinity: {}
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: node-role.kubernetes.io/stage
+              operator: DoesNotExist
 
-# Environment variables
 env:
   ENVIRONMENT: "production"
 
-# Health check configuration
 healthcheck:
   enabled: true
   path: /healthz
@@ -82,3 +86,4 @@ healthcheck:
   timeoutSeconds: 5
   failureThreshold: 3
   successThreshold: 1
+
