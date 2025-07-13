@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: nolet7/interactiveapp
+  repository: noletengine/interactiveapp
   pullPolicy: IfNotPresent
   tag: "latest"
 
