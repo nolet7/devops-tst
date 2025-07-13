@@ -8,8 +8,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/nolet7/devops-test.git
-    targetRevision: HEAD
+    repoURL: https://github.com/nolet7/devops-tst.git
+    targetRevision: feature/devops-test
     path: helm/interactiveapp
     helm:
       releaseName: interactiveapp
