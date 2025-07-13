@@ -78,13 +78,8 @@ affinity:
 env:
   ENVIRONMENT: "production"
 
-<<<<<<< HEAD
-=======
-# Namespace configuration
 namespace: "devops-tst"
 
-# Health check configuration
->>>>>>> 7c79531bb0e86d4e1350d271f77e1424c2a5f110
 healthcheck:
   enabled: true
   path: /healthz
